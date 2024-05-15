@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ko.or.kosa.mapper.BoardMapper">
+	<select id="boardList" resultType="ko.or.kosa.entity.BoardVO">
+         select * 
+         from board	
+	</select>
+	
+	<select id="searchBoardList" resultType="ko.or.kosa.entity.BoardVO">
+		SELECT  
+        		*
+		FROM  board 
+        <where>
+            <if test="searchKeyword != null and searchKeyword != ''">
+                title LIKE CONCAT ('%', #{searchKeyword},'%')
+            </if>
+		</where>	            
+        <choose>
+            <when test='orderColumn == "0"'>ORDER BY id        ${dir}</when>
+            <when test='orderColumn == "1"'>ORDER BY title     ${dir}</when>
+            <when test='orderColumn == "2"'>ORDER BY writeid   ${dir}</when>
+            <when test='orderColumn == "3"'>ORDER BY writedate ${dir}</when>
+        </choose>
+        LIMIT #{length}  OFFSET #{start}
+	</select>
+
+	<select id="getSearchBoardTotalCount" resultType="int">
+		SELECT  
+        		count(*)
+		FROM  board 
+        <where>
+            <if test="searchKeyword != null and searchKeyword != ''">
+                title LIKE CONCAT ('%', #{searchKeyword},'%')
+            </if>
+		</where>            
+	</select>
+	
+  <select id="searchBoardList2" resultType="ko.or.kosa.entity.BoardVO">
+    SELECT  
+            *
+    FROM  board 
+        <where>
+           <if test="searchKeyword != null and searchKeyword != ''">
+               title LIKE CONCAT ('%', #{searchKeyword},'%')
+           </if>
+    </where>           
+  </select>
+  
+  <insert id="insert" >
+    insert into board(
+	    title,
+	    content,
+	    register_id
+    ) values (
+      #{title},
+      #{content},
+      #{register_id}
+    )
+	</insert>
+	
+</mapper>
